@@ -130,8 +130,100 @@ end
 
 > در ماژول `hook` با برای تابع `call` نوع دیگری داریم که `state` را به روال قبل به پلاگین ها می دهد ولی در برنامه `state` اولیه را مصرف می کند ولی این امکان به برنامه نویس داده می شود که با `state` کار کند و موارد مربوط به خودش را به سیستم اضافه نماید شما می توانید ماژول hook و توابع آن را در [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/event/hook.ex) ببنید
 
+### ساخت یک پلاگین ساده
+در اولین مرحله شما باید رویدادی که نیاز دارید را انتخاب کنید. این رویداد در اسناد مربوط به سیستم مدیریت محتوا میشکا ثبت می باشد. به عنوان مثال در این آموزش کوتاه رویداد `on_user_after_login` را انتخاب می کنیم. این رویداد در زمانی اجرا می شود که یک ورود مجاز به سیستم انجام گردد. لیست کل `event` های  هسته `cms` را می توانید [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/event/event.ex) ببنید
+
+در مرحله بعدی یک پکیج `heex` درست کنید داکیومنت آن را می توانید در [اینجا](https://hex.pm/docs/usage) ببنید. حال تصمیم با شماست که این پلاگین را فقط در گیت هاب خود داشته باشید یا آن را در `heex` نیز منتشر کنید. در مرحله بعد شما باید یک ماژول را به عنوان اکشن در نظر بگیرید ( در پکیجی که منتشر کردید)
+
+در این آموزش به عنوان مثال یک ماژول با نام `MishkaUser.CorePlugin.Login.SuccessLogin` درست می کنیم در ابتدای این ماژو شما می توانید با ماکرو از پیش تعریف شده جلو بروید که پیشنهاد روی همین موضوع می باشد یا می توانید خودتان یک `Genserver` بسازید. ولی فرض بر اینکه از ماکرو `__using__` ماژول `Hook` استفاده می کنید. 
+
+```elixir
+defmodule MishkaUser.CorePlugin.Login.SuccessLogin do
+  alias MishkaInstaller.Reference.OnUserAfterLogin
+  use MishkaInstaller.Hook,
+      module: __MODULE__,
+      behaviour: OnUserAfterLogin,
+      event: :on_user_after_login,
+      initial: []
+      
+      .....
+end
+```
+همانطور که می بنید در خط اول `callback` رویداد انتخاب شده را `alias` کردیم که این کار انتخابی می باشد ولی برای تمیز شدن فایل و کوتاه تر شدن لاین ها انجام گردید و در خط دوم ماژول `MishkaInstaller.Hook` ماکرو `__using__` صدا زده می شود و چهار پارامتر که اولی ماژولی که به عنوان اکشن پلاگین در نظر گرفته ای به آن داده می شود و دومی نیز `behaviour` رویداد مورد نظر  و سومی نیز `atom` یا نام یونیک رویداد و چهارمی نیز ورودی اولیه `Genserver` می باشد که بستگی به استراتژی شما دارد در این آموزش به صورت یک لیست خالی در نظر گرفته شده است.
+> توجه کنید: ورودی به تابعی به نام `initial` ارسال می گردد و بر اساس انتخاب رویداد `OnUserAfterLogin` باید ورودی آن از نوع لیست باشد. و وقتی `Hook` در ماژول پلاگین شما `use` می شود باید دو تابع اصلی به نام ها `initial` و `call` اضافه شود
+
+
+در تابع اول: در زمانی که سرور فونیکس شما بالا می آید با بانک اطلاعاتی شما چک می کند اگر داده ای برای پلاگین شما ثبت شده است پس از آن داده برای ساخت یک `state` داینامیک که سوپروایزر نیز می شود استفاده می کند و اگر نشده باشد از اطلاعات اولیه پلاگین شما به آن می دهید استفاده می کند و در دیتابیس نیز همان را ذخیره می کند.
+> دلیل این کار این می باشد ممکن است شما از پارامتر `extra` که در استراکت `state` قرار داده شده است برای کانفیگ کاربری استفاده کنید و هر زمانی که سرور خاموش روشن می شود نباید این پارامتر فراموش شود .
+
+```elixir
+    @spec initial(list()) :: {:ok, OnUserAfterLogin.ref(), list()}
+    def initial(args) do
+      event = %PluginState{name: "MishkaUser.CorePlugin.Login.SuccessLogin", event: Atom.to_string(@ref), priority: 1}
+      Hook.register(event: event)
+      {:ok, @ref, args}
+    end
+```
+همانطور که می بنید ما یک پلاگین با استراکت از پیش ساخته شده
+```elixir
+ defstruct [:name, :event, priority: 1, status: :started, depend_type: :soft, depends: [], extra: []]
+```
+
+در پارامتر `event` ارزش گذاری کردیم و آن را در تابع `register` از ماژول `Hook` به سیستم ثبت نمودیم. و در آخر نیز `{:ok, @ref, args}` خروجی را بر اساس `callback` مورد نظر پس دادیم. در [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/event/reference/on_user_after_login.ex) می توانید ببنید
+
+```elixir
+ @type reason() :: map() | String.t() # output of state for this event
+ @callback initial(list()) :: {:ok, ref(), list()} | {:error, ref(), reason()} # Register hook
+```
+> باید توجه داشت هر پلاگین علاوه بر یک `state` که با ماژول های زیر سیستم `mishka_installer`  سوپروایز می شود دارد یک `state` به نام خود ماژول نیز دارد که از نوع یک `Genserver` ساده می باشد پس زمان آن رسیده است که در یکی از اپلیکیشن های زیر سیستم ها ثبت شود. حال این می تواند یک پروژه جداگانه در ساختار `DDD` پروژه میشکا باشد یا خواه می خواهد به صورت مثال در زیر سیستم  `mishka_user` باشد.
+> در نسخه بعدی شرایط برای ثبت مجدد پلاگین ها در سیستم مدیریت محتوا بعد از خاموش و روشن شدن سرور نیز ایجاد می گردد
+```elixir
+defmodule MishkaUser.Application do
+  @moduledoc false
+  use Application
+  @impl true
+  def start(_type, _args) do
+    children = [
+      %{id: MishkaUser.CorePlugin.Login.SuccessLogin, start: {MishkaUser.CorePlugin.Login.SuccessLogin, :start_link, [[]]}}
+    ]
+    opts = [strategy: :one_for_one, name: MishkaUser.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+```
+
+حال زمان آن رسیده است که دوباره به ماژول پلاگین خود برگردید و فانکشن `call` را بر اساس `callback` رویداد مورد نظر بسازید
+
+```elixir
+    @spec call(OnUserAfterLogin.t()) :: {:reply, OnUserAfterLogin.t()}
+    def call(%OnUserAfterLogin{} = state) do
+      YOUR CODE, OR Change event and pass it to Below tupel
+      {:reply, state}
+    end
+```
+
+همانطور که در اسناد سیستم مدیریت محتوا میشکا نیز ثبت شده است و همینطور در `callback` رویداد مورد نظر شما دو راه خواهید داشت می توانید از `{:reply, state}` استفاده کنید و `state` را به پلاگین های دیگر فعال در این رویداد انتقال بدهید یا می توانید همینجا از `{:reply, :halt, state}` استفاده کنید آخرین `state` چه ویرایش شده باشد چه نشده باشد را به `Hook` برگردانید. با این روش حلقه فراخوانی دیگر پلاگین ها شکسته می شود و تا همینجا بسنده می گردد.
+
+حال زمان استارت مجدد سرور فونیکس و پروژه فرا رسیده است
+
+
 
 ### منابع:
 
 1. https://github.com/mishka-group/mishka-cms/issues/148
 2. https://youtu.be/7LX67RjkiGc
+3. https://github.com/processone/ejabberd/blob/master/src/gen_mod.erl#L89-L92
+4. https://hexdocs.pm/plug/Plug.Conn.html
+5. https://www.ejabberd.im/
+6. [How to add and install deps without stopping phoenix server (hex package)](https://elixirforum.com/t/how-to-add-and-install-deps-without-stopping-phoenix-server-hex-package/44888)
+7. [How to create Ecto temporary tables for test a library](https://elixirforum.com/t/how-to-create-ecto-temporary-tables-for-test-a-library/44890)
+8. [Need advice to implement custom extension and template installation in an elixir CMS](https://elixirforum.com/t/need-advice-to-implement-custom-extension-and-template-installation-in-an-elixir-cms/44863/)
+9. [How to check a macro was called in a module](https://elixirforum.com/t/how-to-check-a-macro-was-called-in-a-module/44674)
+10. https://docs.joomla.org/Plugin/Events
+11. https://developer.wordpress.org/plugins/hooks/actions/
+12. https://elixirforum.com/t/how-to-get-ecto-stream-respond-in-exunit/46138
+13. https://elixirforum.com/t/genserver-doesnt-consider-ecto-sandbox/46105
+14. https://elixirforum.com/t/dynamicsupervisor-terminate-genserver-state-in-transient-restart-method/45932/2
+15. https://elixirforum.com/t/genserver-terminate-strategy-and-re-bind-data/45779
+16. https://elixirforum.com/t/how-to-send-sandbox-allow-for-each-dynamic-supervisor-testing/46422/4
+17. https://github.com/hexpm/hexpm/issues/1124

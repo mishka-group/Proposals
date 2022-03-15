@@ -1,5 +1,5 @@
 # Proposals
-Proposals repository helps us to keep our project clean and the place to discuss long PR. Hence, you can submit your idea as PR to let us know your solution or facility to improve Mishka projects.
+Proposals repository helps us to keep our project clean and the place to discuss long PR. Hence, you can submit your idea as PR to let us know what is your solution or facility to improve Mishka projects.
 
 > It should be noted it must be a Readme which is Persian or English, because we can support these languages.
 
