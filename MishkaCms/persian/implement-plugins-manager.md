@@ -157,12 +157,12 @@ end
 > دلیل این کار این می باشد ممکن است شما از پارامتر `extra` که در استراکت `state` قرار داده شده است برای کانفیگ کاربری استفاده کنید و هر زمانی که سرور خاموش روشن می شود نباید این پارامتر فراموش شود .
 
 ```elixir
-    @spec initial(list()) :: {:ok, OnUserAfterLogin.ref(), list()}
-    def initial(args) do
-      event = %PluginState{name: "MishkaUser.CorePlugin.Login.SuccessLogin", event: Atom.to_string(@ref), priority: 1}
-      Hook.register(event: event)
-      {:ok, @ref, args}
-    end
+@spec initial(list()) :: {:ok, OnUserAfterLogin.ref(), list()}
+def initial(args) do
+  event = %PluginState{name: "MishkaUser.CorePlugin.Login.SuccessLogin", event: Atom.to_string(@ref), priority: 1}
+  Hook.register(event: event)
+  {:ok, @ref, args}
+end
 ```
 همانطور که می بنید ما یک پلاگین با استراکت از پیش ساخته شده
 ```elixir
@@ -195,11 +195,11 @@ end
 حال زمان آن رسیده است که دوباره به ماژول پلاگین خود برگردید و فانکشن `call` را بر اساس `callback` رویداد مورد نظر بسازید
 
 ```elixir
-    @spec call(OnUserAfterLogin.t()) :: {:reply, OnUserAfterLogin.t()}
-    def call(%OnUserAfterLogin{} = state) do
-      YOUR CODE, OR Change event and pass it to Below tupel
-      {:reply, state}
-    end
+@spec call(OnUserAfterLogin.t()) :: {:reply, OnUserAfterLogin.t()}
+def call(%OnUserAfterLogin{} = state) do
+  YOUR CODE, OR Change state and pass it to Below Tuple
+  {:reply, state}
+end
 ```
 
 همانطور که در اسناد سیستم مدیریت محتوا میشکا نیز ثبت شده است و همینطور در `callback` رویداد مورد نظر شما دو راه خواهید داشت می توانید از `{:reply, state}` استفاده کنید و `state` را به پلاگین های دیگر فعال در این رویداد انتقال بدهید یا می توانید همینجا از `{:reply, :halt, state}` استفاده کنید آخرین `state` چه ویرایش شده باشد چه نشده باشد را به `Hook` برگردانید. با این روش حلقه فراخوانی دیگر پلاگین ها شکسته می شود و تا همینجا بسنده می گردد.
