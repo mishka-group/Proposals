@@ -83,7 +83,7 @@ end
 3. دریافت داده با `get` و `get_all`: این دو تابع همانطور که از اسم آن ها مشخص می باشد اطلاعات مربوط هر پلاگین یا پلاگین های یک رویداد خاص را از `state` استخراج می کند و همینطور می تواند بدون محدودیت از کل رم نیز اطلاعات تمام پلاگین ها را نیز فراخوانی کند.
 4. حذف یک پلاگین از یک رویداد خاص یا حدف تمام پلاگین های یک رویداد خاص با تابع `delete`: این اطلاعات فقط از رم حذف می شود و تغییری روی بانک اطلاعاتی نخواهد داد
 5. تابع تغییر وضعیت پلاگین به متوقف شده با تابع `stop` این تابع تغییر در بانک اطلاعاتی نیز اعمال می کند و فقط وضعیت یک پلاگین را تغییر می دهد
-> این فایل شامل دیگر توابع نیز می شود از جمله استراتژی هایی که در هنگام خطا یا متوقف کردن یک پلاگین فراخوانی می شود می توانید در [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/state/plugin_state.ex) ببنید
+> این فایل شامل دیگر توابع نیز می شود از جمله استراتژی هایی که در هنگام خطا یا متوقف کردن یک پلاگین فراخوانی می شود می توانید در [اینجا](https://github.com/mishka-group/mishka_installer/blob/master/lib/plugin_manager/state/plugin_state.ex) ببنید
 
 
 ### توابع و ماژول `Hook`
@@ -122,10 +122,10 @@ end
 
 ---
 
-> در ماژول `hook` با برای تابع `call` نوع دیگری داریم که `state` را به روال قبل به پلاگین ها می دهد ولی در برنامه `state` اولیه را مصرف می کند ولی این امکان به برنامه نویس داده می شود که با `state` کار کند و موارد مربوط به خودش را به سیستم اضافه نماید شما می توانید ماژول hook و توابع آن را در [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/event/hook.ex) ببنید
+> در ماژول `hook` با برای تابع `call` نوع دیگری داریم که `state` را به روال قبل به پلاگین ها می دهد ولی در برنامه `state` اولیه را مصرف می کند ولی این امکان به برنامه نویس داده می شود که با `state` کار کند و موارد مربوط به خودش را به سیستم اضافه نماید شما می توانید ماژول hook و توابع آن را در [اینجا](https://github.com/mishka-group/mishka_installer/blob/master/lib/plugin_manager/event/hook.ex) ببنید
 
 ### ساخت یک پلاگین ساده
-در اولین مرحله شما باید رویدادی که نیاز دارید را انتخاب کنید. این رویداد در اسناد مربوط به سیستم مدیریت محتوا میشکا ثبت می باشد. به عنوان مثال در این آموزش کوتاه رویداد `on_user_after_login` را انتخاب می کنیم. این رویداد در زمانی اجرا می شود که یک ورود مجاز به سیستم انجام گردد. لیست کل `event` های  هسته `cms` را می توانید [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/event/event.ex) ببنید
+در اولین مرحله شما باید رویدادی که نیاز دارید را انتخاب کنید. این رویداد در اسناد مربوط به سیستم مدیریت محتوا میشکا ثبت می باشد. به عنوان مثال در این آموزش کوتاه رویداد `on_user_after_login` را انتخاب می کنیم. این رویداد در زمانی اجرا می شود که یک ورود مجاز به سیستم انجام گردد. لیست کل `event` های  هسته `cms` را می توانید [اینجا](https://github.com/mishka-group/mishka_installer/blob/master/lib/plugin_manager/event/event.ex) ببنید
 
 در مرحله بعدی یک پکیج `heex` درست کنید داکیومنت آن را می توانید در [اینجا](https://hex.pm/docs/usage) ببنید. حال تصمیم با شماست که این پلاگین را فقط در گیت هاب خود داشته باشید یا آن را در `heex` نیز منتشر کنید. در مرحله بعد شما باید یک ماژول را به عنوان اکشن در نظر بگیرید ( در پکیجی که منتشر کردید)
 
@@ -163,7 +163,7 @@ end
  defstruct [:name, :event, priority: 1, status: :started, depend_type: :soft, depends: [], extra: []]
 ```
 
-در پارامتر `event` ارزش گذاری کردیم و آن را در تابع `register` از ماژول `Hook` به سیستم ثبت نمودیم. و در آخر نیز `{:ok, @ref, args}` خروجی را بر اساس `callback` مورد نظر پس دادیم. در [اینجا](https://github.com/mishka-group/mishka-cms/blob/master/apps/mishka_installer/lib/plugin_manager/event/reference/on_user_after_login.ex) می توانید ببنید
+در پارامتر `event` ارزش گذاری کردیم و آن را در تابع `register` از ماژول `Hook` به سیستم ثبت نمودیم. و در آخر نیز `{:ok, @ref, args}` خروجی را بر اساس `callback` مورد نظر پس دادیم. در [اینجا](https://github.com/mishka-group/mishka_installer/blob/master/lib/plugin_manager/event/reference/on_user_after_login.ex) می توانید ببنید
 
 ```elixir
  @type reason() :: map() | String.t() # output of state for this event
