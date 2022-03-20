@@ -3,7 +3,15 @@ Proposals repository helps us to keep our project clean and the place to discuss
 
 > It should be noted it must be a Readme which is Persian or English, because we can support these languages.
 
-![mishka-logo](https://user-images.githubusercontent.com/8413604/159166262-9a33c06d-43e0-4ffe-aec0-29293586019e.png)
+
+<p align="center">
+  <img 
+    width="420"
+    height="420"
+    src="https://user-images.githubusercontent.com/8413604/159166262-9a33c06d-43e0-4ffe-aec0-29293586019e.png"
+  >
+</p>
+
 
 ## Our projects
 - [MishkaCms](https://github.com/mishka-group/mishka-cms): 
