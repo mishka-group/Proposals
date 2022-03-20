@@ -3,6 +3,8 @@ Proposals repository helps us to keep our project clean and the place to discuss
 
 > It should be noted it must be a Readme which is Persian or English, because we can support these languages.
 
+![mishka-logo](https://user-images.githubusercontent.com/8413604/159166262-9a33c06d-43e0-4ffe-aec0-29293586019e.png)
+
 ## Our projects
 - [MishkaCms](https://github.com/mishka-group/mishka-cms): 
 > MishkaCms an open source and real time API base CMS Powered by Elixir and Phoenix
