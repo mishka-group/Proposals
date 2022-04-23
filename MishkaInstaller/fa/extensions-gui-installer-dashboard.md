@@ -38,3 +38,6 @@
 6. https://youtu.be/FPDxyX4RzZc
 7. https://youtu.be/7LX67RjkiGc
 8. https://youtu.be/lcqbEsnjMGQ
+9. https://elixirforum.com/t/starting-a-new-node-from-inside-elixir/47084/5
+10. https://elixir-lang.org/getting-started/mix-otp/distributed-tasks.html
+11. https://elixir-lang.org/getting-started/processes.html
