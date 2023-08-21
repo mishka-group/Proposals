@@ -13,7 +13,16 @@ Proposals repository helps us to keep our project clean and the place to discuss
 </p>
 
 
-## Our projects
+## Our active projects
+
+- [MishkaInstaller](https://github.com/mishka-group/mishka_installer):
+> Mishka Installer is a system plugin manager for elixir
+- [Mishka developer tools](https://github.com/mishka-group/mishka_developer_tools):
+> Mishka developer tools provides some macros and modules to make creating your elixir application as easy as possible
+
+
+## Our stopped projects
+
 - [MishkaCms](https://github.com/mishka-group/mishka-cms): 
 > MishkaCms an open source and real time API base CMS Powered by Elixir and Phoenix
 - [Android flutter version of MishkaCms](https://github.com/mishka-group/mishka-cms-android-flutter):
@@ -22,7 +31,5 @@ Proposals repository helps us to keep our project clean and the place to discuss
 > The iOS application for MishkaCms which is created by SwiftUI
 - [MishkaAuth](https://github.com/mishka-group/mishka-auth):
 > It needs to be reconstruction
-- [MishkaInstaller](https://github.com/mishka-group/mishka_installer):
-> Mishka Installer is a system plugin manager for elixir
 - [MishkaSocial](https://github.com/mishka-group/mishka_social):
 > MishkaSocial is a plugin for MishkaCms as a social networking gateway
